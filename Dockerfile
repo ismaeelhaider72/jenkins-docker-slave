@@ -4,7 +4,7 @@ FROM ubuntu:18.04
 RUN apt-get update && apt-get install -y wget
 
 # Download the agent.jar file using wget
-RUN wget -O ~/agent.jar http://192.168.49.1:8080/jnlpJars/agent.jar
+RUN wget -O ~/agent.jar http://192.168.18.112:8080/jnlpJars/agent.jar
 
 RUN pwd
 # Set the working directory
