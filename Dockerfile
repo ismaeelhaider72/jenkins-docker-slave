@@ -2,13 +2,9 @@ FROM ubuntu:18.04
 
 # Install wget
 RUN apt-get update && apt-get install -y wget
-
-# Download the agent.jar file using wget
-RUN wget -O ~/agent.jar http://192.168.18.112:8080/jnlpJars/agent.jar
-
-RUN pwd
-# Set the working directory
-WORKDIR ~
-
-# Define the entry point command to launch the agent.jar
-ENTRYPOINT ["java", "-jar", "~/agent.jar"]
+RUN mkdir -p /java/agent
+WORKDIR /java/agent
+RUN wget http://192.168.18.112:8080/jnlpJars/agent.jar
+RUN java -jar agent.jar -jnlpUrl http://localhost:8080/manage/computer/ismaeel/jenkins-agent.jnlp -secret ea89e2312a656a820d6dfcf2ea98e5fc995bdcede09b29c618d2a339b442d862 -workDir "/java/agent"
+# RUN java -jar agent.jar -jnlpUrl http://localhost:8080/manage/computer/ismaeel/jenkins-agent.jnlp ->
+ENTRYPOINT ["java", "-jar", "/java/agent//agent.jar"]
