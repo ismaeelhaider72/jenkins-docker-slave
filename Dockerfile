@@ -55,43 +55,64 @@
 
 ################### try 3 ##############
 # Base image
-FROM ubuntu:latest
+# FROM ubuntu:latest
+
+# # Install necessary packages
+# RUN apt-get update && \
+#     apt-get install -y curl openjdk-11-jdk && \
+#     rm -rf /var/lib/apt/lists/*
+
+# # Install Docker
+# RUN curl -fsSL https://get.docker.com -o get-docker.sh && \
+#     sh get-docker.sh
+
+# # Set up Jenkins JNLP agent
+# ARG JENKINS_URL
+# ARG JENKINS_AGENT_VERSION=4.9
+# ENV JENKINS_AGENT_HOME=/opt/jenkins
+# ENV JENKINS_AGENT_WORKDIR=/home/jenkins/agent_workspace
+
+# # Create the necessary directories and set permissions
+# RUN mkdir -p /home/jenkins/agent_workspace && \
+#     chmod 777 /home/jenkins/agent_workspace && \
+#     groupadd -g 1000 jenkins && \
+#     useradd -u 1000 -g jenkins -m -d ${JENKINS_AGENT_HOME} jenkins
+
+# RUN mkdir -p /usr/share/jenkins/agent && \
+#     curl -fsSL ${JENKINS_URL}/jnlpJars/agent.jar -o /usr/share/jenkins/agent/agent.jar
+
+# COPY jenkins-agent.sh /usr/local/bin/jenkins-agent.sh
+# RUN chmod +x /usr/local/bin/jenkins-agent.sh
+
+# USER jenkins
+
+# VOLUME ${JENKINS_AGENT_WORKDIR}
+# WORKDIR ${JENKINS_AGENT_WORKDIR}
+
+
+
+
+# ENTRYPOINT ["/bin/bash"]
+# # ENTRYPOINT ["/usr/local/bin/jenkins-agent.sh"]
+
+
+
+############## try 4 ###################
+
+FROM ubuntu
 
 # Install necessary packages
 RUN apt-get update && \
-    apt-get install -y curl openjdk-11-jdk && \
+    apt-get install -y openjdk-11-jdk curl && \
     rm -rf /var/lib/apt/lists/*
 
-# Install Docker
-RUN curl -fsSL https://get.docker.com -o get-docker.sh && \
-    sh get-docker.sh
+# Set the Jenkins server URL and agent name
+ENV JENKINS_URL=http://192.168.18.191:8080
+ENV AGENT_NAME=docker-slave
 
-# Set up Jenkins JNLP agent
-ARG JENKINS_URL
-ARG JENKINS_AGENT_VERSION=4.9
-ENV JENKINS_AGENT_HOME=/opt/jenkins
-ENV JENKINS_AGENT_WORKDIR=/home/jenkins/agent_workspace
+# Download and install the Jenkins agent JAR
+RUN curl -o agent.jar $JENKINS_URL/jnlpJars/agent.jar
 
-# Create the necessary directories and set permissions
-RUN mkdir -p /home/jenkins/agent_workspace && \
-    chmod 777 /home/jenkins/agent_workspace && \
-    groupadd -g 1000 jenkins && \
-    useradd -u 1000 -g jenkins -m -d ${JENKINS_AGENT_HOME} jenkins
-
-RUN mkdir -p /usr/share/jenkins/agent && \
-    curl -fsSL ${JENKINS_URL}/jnlpJars/agent.jar -o /usr/share/jenkins/agent/agent.jar
-
-COPY jenkins-agent.sh /usr/local/bin/jenkins-agent.sh
-RUN chmod +x /usr/local/bin/jenkins-agent.sh
-
-USER jenkins
-
-VOLUME ${JENKINS_AGENT_WORKDIR}
-WORKDIR ${JENKINS_AGENT_WORKDIR}
-
-
-
-
-ENTRYPOINT ["/bin/bash"]
-# ENTRYPOINT ["/usr/local/bin/jenkins-agent.sh"]
+# Start the Jenkins agent
+CMD java -jar agent.jar -jnlpUrl $JENKINS_URL/computer/$AGENT_NAME/slave-agent.jnl
 
