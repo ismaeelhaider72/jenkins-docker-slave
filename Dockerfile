@@ -36,7 +36,7 @@ ENV JENKINS_AGENT_WORKDIR=/home/jenkins/agent
 RUN useradd -m -d ${JENKINS_AGENT_HOME} jenkins
 
 RUN mkdir -p /usr/share/jenkins/agent && \
-    curl -fsSL ${JENKINS_URL}/jnlpJars/agent.jar -o /usr/share/jenkins/agent/agent.jar
+    curl -fsSL http://192.168.18.191:8080/jnlpJars/agent.jar -o /usr/share/jenkins/agent/agent.jar
 
 COPY jenkins-agent.sh /usr/local/bin/jenkins-agent.sh
 RUN chmod +x /usr/local/bin/jenkins-agent.sh
