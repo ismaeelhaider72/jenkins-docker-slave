@@ -70,24 +70,27 @@ RUN curl -fsSL https://get.docker.com -o get-docker.sh && \
 ARG JENKINS_URL
 ARG JENKINS_AGENT_VERSION=4.9
 ENV JENKINS_AGENT_HOME=/opt/jenkins
-ENV JENKINS_AGENT_WORKDIR=/home/jenkins/agent
+ENV JENKINS_AGENT_WORKDIR=/home/jenkins/agent_workspace
 
-RUN useradd -m -d ${JENKINS_AGENT_HOME} jenkins
+RUN groupadd -g 1000 jenkins && \
+    useradd -u 1000 -g jenkins -m -d ${JENKINS_AGENT_HOME} jenkins
 
 RUN mkdir -p /usr/share/jenkins/agent && \
     curl -fsSL ${JENKINS_URL}/jnlpJars/agent.jar -o /usr/share/jenkins/agent/agent.jar
 
 COPY jenkins-agent.sh /usr/local/bin/jenkins-agent.sh
 RUN chmod +x /usr/local/bin/jenkins-agent.sh
-RUN usermod -aG sudo jenkins
+
 USER jenkins
 
 # Create a new directory for the Jenkins agent
-RUN mkdir -p /home/jenkins/agent_workspace
+RUN mkdir -p ${JENKINS_AGENT_WORKDIR} && \
+    chmod 777 ${JENKINS_AGENT_WORKDIR}
 
-VOLUME /home/jenkins/agent_workspace
-WORKDIR /home/jenkins/agent_workspace
+VOLUME ${JENKINS_AGENT_WORKDIR}
+WORKDIR ${JENKINS_AGENT_WORKDIR}
 
+
+ENTRYPOINT ["/bin/bash"]
 # ENTRYPOINT ["/usr/local/bin/jenkins-agent.sh"]
 
-ENTRYPOINT ["/bin/bash]
