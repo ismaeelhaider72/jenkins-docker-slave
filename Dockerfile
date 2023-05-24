@@ -82,12 +82,10 @@ RUN chmod +x /usr/local/bin/jenkins-agent.sh
 
 USER jenkins
 
-# Set proper permissions for the working directory
-RUN mkdir -p ${JENKINS_AGENT_WORKDIR} && \
-    chmod 777 ${JENKINS_AGENT_WORKDIR}
+# Create a new directory for the Jenkins agent
+RUN mkdir -p /home/jenkins/agent_workspace
 
-VOLUME ${JENKINS_AGENT_WORKDIR}
-WORKDIR ${JENKINS_AGENT_WORKDIR}
+VOLUME /home/jenkins/agent_workspace
+WORKDIR /home/jenkins/agent_workspace
 
 ENTRYPOINT ["/usr/local/bin/jenkins-agent.sh"]
-
