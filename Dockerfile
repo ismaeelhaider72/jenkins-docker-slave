@@ -15,6 +15,45 @@
 # ENTRYPOINT ["java", "-jar", "/java/agent//agent.jar"]
 
 ###################### try 2 ###############
+# # Base image
+# FROM ubuntu:latest
+
+# # Install necessary packages
+# RUN apt-get update && \
+#     apt-get install -y curl openjdk-11-jdk && \
+#     rm -rf /var/lib/apt/lists/*
+
+# # Install Docker
+# RUN curl -fsSL https://get.docker.com -o get-docker.sh && \
+#     sh get-docker.sh
+
+# # Set up Jenkins JNLP agent
+# ARG JENKINS_URL
+# ARG JENKINS_AGENT_VERSION=4.9
+# ENV JENKINS_AGENT_HOME=/opt/jenkins
+# ENV JENKINS_AGENT_WORKDIR=/home/jenkins/agent
+
+# RUN useradd -m -d ${JENKINS_AGENT_HOME} jenkins
+
+# RUN mkdir -p /usr/share/jenkins/agent && \
+#     curl -fsSL http://192.168.18.191:8080/jnlpJars/agent.jar -o /usr/share/jenkins/agent/agent.jar
+
+# COPY jenkins-agent.sh /usr/local/bin/jenkins-agent.sh
+# RUN chmod +x /usr/local/bin/jenkins-agent.sh
+
+# USER jenkins
+
+# VOLUME ${JENKINS_AGENT_WORKDIR}
+# WORKDIR ${JENKINS_AGENT_WORKDIR}
+
+# ENTRYPOINT ["/usr/local/bin/jenkins-agent.sh"]
+
+
+
+
+
+
+################### try 3 ##############
 # Base image
 FROM ubuntu:latest
 
@@ -36,14 +75,19 @@ ENV JENKINS_AGENT_WORKDIR=/home/jenkins/agent
 RUN useradd -m -d ${JENKINS_AGENT_HOME} jenkins
 
 RUN mkdir -p /usr/share/jenkins/agent && \
-    curl -fsSL http://192.168.18.191:8080/jnlpJars/agent.jar -o /usr/share/jenkins/agent/agent.jar
+    curl -fsSL ${JENKINS_URL}/jnlpJars/agent.jar -o /usr/share/jenkins/agent/agent.jar
 
 COPY jenkins-agent.sh /usr/local/bin/jenkins-agent.sh
 RUN chmod +x /usr/local/bin/jenkins-agent.sh
 
 USER jenkins
 
+# Set proper permissions for the working directory
+RUN mkdir -p ${JENKINS_AGENT_WORKDIR} && \
+    chmod 777 ${JENKINS_AGENT_WORKDIR}
+
 VOLUME ${JENKINS_AGENT_WORKDIR}
 WORKDIR ${JENKINS_AGENT_WORKDIR}
 
 ENTRYPOINT ["/usr/local/bin/jenkins-agent.sh"]
+
