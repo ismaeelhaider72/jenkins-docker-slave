@@ -107,7 +107,9 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Set the Jenkins server URL and agent name
-ENV JENKINS_URL=http://192.168.18.191:8080
+# ENV JENKINS_URL=http://username:password@192.168.18.191:8080
+
+ENV JENKINS_URL=http://ismaeel:ismaeel@192.168.18.191:8080
 ENV AGENT_NAME=docker-slave
 
 # Download and install the Jenkins agent JAR
