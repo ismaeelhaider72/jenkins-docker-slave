@@ -89,4 +89,6 @@ RUN mkdir -p /home/jenkins/agent_workspace && \
 VOLUME /home/jenkins/agent_workspace
 WORKDIR /home/jenkins/agent_workspace
 
-ENTRYPOINT ["/usr/local/bin/jenkins-agent.sh"]
+# ENTRYPOINT ["/usr/local/bin/jenkins-agent.sh"]
+
+ENTRYPOINT ["/bin/bash]
