@@ -92,6 +92,6 @@ WORKDIR ${JENKINS_AGENT_WORKDIR}
 
 
 
-# ENTRYPOINT ["/bin/bash"]
-ENTRYPOINT ["/usr/local/bin/jenkins-agent.sh"]
+ENTRYPOINT ["/bin/bash"]
+# ENTRYPOINT ["/usr/local/bin/jenkins-agent.sh"]
 
