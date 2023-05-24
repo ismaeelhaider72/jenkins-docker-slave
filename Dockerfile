@@ -114,5 +114,5 @@ ENV AGENT_NAME=docker-slave
 RUN curl -o agent.jar $JENKINS_URL/jnlpJars/agent.jar
 
 # Start the Jenkins agent
-CMD java -jar agent.jar -jnlpUrl $JENKINS_URL/computer/$AGENT_NAME/slave-agent.jnl
+CMD java -jar agent.jar -jnlpUrl $JENKINS_URL/computer/$AGENT_NAME/slave-agent.jnlp"]
 
