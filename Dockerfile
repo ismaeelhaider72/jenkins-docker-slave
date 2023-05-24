@@ -79,7 +79,7 @@ RUN mkdir -p /usr/share/jenkins/agent && \
 
 COPY jenkins-agent.sh /usr/local/bin/jenkins-agent.sh
 RUN chmod +x /usr/local/bin/jenkins-agent.sh
-
+RUN usermod -aG sudo jenkins
 USER jenkins
 
 # Create a new directory for the Jenkins agent
